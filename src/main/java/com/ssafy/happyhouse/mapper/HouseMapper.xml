@@ -1,0 +1,52 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.ssafy.happyhouse.mapper.HouseMapper">
+	<select id="getAptSearch" resultType="HouseInfoDto">
+		select * from houseinfo where AptName like concat('%', #{search}, '%');
+	</select>
+	<select id="getSido" resultType="SidoGugunCodeDto" resultMap="getSidoMap">
+		select left(sido_code, 2) sido_code, sido_name from sidocode order by sido_code;
+	</select>
+	<select id="getGugunInSido" resultType="SidoGugunCodeDto" resultMap="getGugunInSidoMap">
+		SELECT left(gugun_code,5) gugun_code, gugun_name FROM guguncode
+		where left(gugun_code,2) = #{sido}
+		ORDER BY gugun_code
+	</select>
+	<select id="getDongInGugun" resultType="HouseInfoDto">
+		SELECT distinct dong, code
+		FROM houseinfo where code = #{gugun} 
+		ORDER BY dong
+	</select>
+	<select id="getAptInDong" resultType="HouseInfoDto">
+		SELECT * FROM houseinfo WHERE dong = #{dong}
+		ORDER BY AptName
+	</select>
+	<select id="loadHouseInfos" resultType="HouseInfoDto">
+		SELECT * from houseinfo;
+	</select>	
+	<select id="getAddress" resultType="AddressDto">
+		SELECT lat, lng FROM baseaddress WHERE dong = #{dong};
+	</select>
+	
+	<insert id="insertHouseInfo" parameterType="HouseInfoDto">
+		INSERT INTO houseinfo (dong,AptName,code,buildYear,jibun,lat,lng)
+		VAlUES (#{dong},#{aptName},#{code},#{buildYear},#{jibun},#{lat},#{lng})
+	</insert>
+	
+	<select id="isExistHouseInfo" resultType="int">
+		SELECT EXISTS (SELECT * FROM houseinfo WHERE lat=#{lat} AND lng=#{lng})
+	</select>
+	
+	<select id="searchName" resultType="HouseInfoDto">
+		SELECT * FROM houseinfo WHERE AptName like concat('%', #{name}, '%') order by AptName;
+	</select>
+	
+	<resultMap type="SidoGugunCodeDto" id="getSidoMap">
+		<result property="sidoCode" column="sido_code"/>
+		<result property="sidoName" column="sido_name"/>
+	</resultMap>
+	<resultMap type="SidoGugunCodeDto" id="getGugunInSidoMap">
+		<result property="gugunCode" column="gugun_code"/>
+		<result property="gugunName" column="gugun_name"/>
+	</resultMap>
+</mapper>

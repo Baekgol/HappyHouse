@@ -1,0 +1,73 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.ssafy.happyhouse.mapper.HouseDealMapper">
+	<select id="SimpleSearchHouse" resultType="HouseDealDto" parameterType="String">
+		SELECT no, dealAmount, area, floor, dong, Aptname FROM housedeal where dong = #{dong}
+	</select>
+	
+	<select id="selectByUserId" resultType="HouseDealDto" parameterType="String">
+		SELECT no, dong, AptName, code, dealAmount, buildYear, dealYear,
+		dealMonth, dealDay, area, floor, jibun
+		FROM housedeal
+		WHERE type=#{userid}
+	</select>
+	
+	<delete id="deleteMyDealByNo" parameterType="int">
+		DELETE FROM housedeal WHERE no = #{dealNo}
+	</delete>
+	
+	<delete id="deleteMyDealById" parameterType="String">
+		DELETE FROM housedeal WHERE type = #{userid}
+	</delete>
+	
+	<select id="SearchHouse" resultType="HouseDealDto" parameterType="String">
+		SELECT no, dong, AptName, dealAmount, buildYear, area, floor, jibun FROM housedeal where AptName = #{Aptname}
+	</select>
+		
+	<select id="getDealAvgBySido" parameterType="String" resultType="HouseDealDto">
+		SELECT hd.code, hd.avg, gc.gugun_name avgGuName
+		FROM (SELECT code, round(avg(dealAmountInt),1) avg 
+				FROM housedeal
+				GROUP BY code
+				HAVING left(code,2) = (select left(sido_code,2) from sidocode where sido_name=#{sidoName})
+			  ) hd
+		INNER JOIN guguncode gc
+		ON LEFT(gc.gugun_code,5) = hd.code
+		ORDER BY avg DESC;
+	</select>
+	
+	<select id="getDealCntByGugun" parameterType="String" resultType="HouseDealDto">
+		SELECT COUNT(*) cnt, a.dong
+		FROM (SELECT code, dong, no
+				FROM housedeal
+				WHERE code = (SELECT LEFT(gugun_code,5) FROM guguncode WHERE gugun_name=#{gugunName})) a
+		GROUP BY a.dong
+		ORDER BY cnt DESC
+	</select>
+	
+	<select id="loadDealInfos" resultType="HouseDealDto">
+		SELECT * FROM housedeal;		
+	</select>
+	
+	<select id="loadDealInfosWithDong" resultType="HouseDealDto">
+		SELECT * FROM housedeal WHERE dong = #{dong};		
+	</select>
+	
+	<select id="loadDealInfosWithDeal" resultType="HouseDealDto">
+		SELECT * FROM housedeal WHERE no = #{no};		
+	</select>
+	
+	<insert id="insertHouseDeal" parameterType="HouseDealDto">
+		INSERT INTO housedeal (dong,AptName,code,dealAmount,buildYear,dealYear,dealMonth, dealDay, area,floor,jibun,dealAmountInt,type)
+		VALUES (#{dong},#{AptName},#{code},#{dealAmount},#{buildYear},#{dealYear},#{dealMonth},#{dealDay},#{area},#{floor},#{jibun},#{dealAmountInt},#{type})
+	</insert>
+	
+	<!-- 매물 고유번호로 매물작성한사람  id(type)가져오기 -->
+	<select id="getTypeByNo" parameterType="int" resultType="String">
+		select type from housedeal where no = #{dealno}
+	</select>
+	
+	<select id="search" resultType="HouseDealDto">
+		SELECT * FROM housedeal WHERE AptName = #{name};
+	</select>
+</mapper>

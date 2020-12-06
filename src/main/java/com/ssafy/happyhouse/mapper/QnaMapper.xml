@@ -1,0 +1,36 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.ssafy.happyhouse.mapper.QnaMapper">
+	
+	<select id="selectTotalCount" resultType="int">
+        SELECT COUNT(*)
+        FROM qna where dealno=#{dealno};
+    </select>
+    
+    <select id="selectPage" parameterType="int" resultType="QnaDto">
+        SELECT *
+        FROM qna where dealno=#{dealno}
+        ORDER BY id DESC LIMIT #{startRow},#{countPerPage};
+    </select>
+	
+	<select id="searchQnaByDealNo" resultType="QnaDto" parameterType="int">
+		SELECT * FROM qna WHERE dealno=#{dealno};
+	</select>
+	<select id="searchOne" parameterType="int" resultType="QnaDto">
+		select * from qna where id=#{id};
+	</select>
+	<insert id="insertQna" parameterType="QnaDto">
+		insert into qna (title, userid, contents, dealno) values (#{title}, #{userid}, #{contents}, #{dealno})
+	</insert>
+	<update id="updateQna" parameterType="QnaDto">
+		update qna set title = #{title}, writer=#{writer}, contents=#{contents}
+		where id=#{id}
+	</update>
+	<update id="updateAns" parameterType="QnaDto">
+		update qna set answer=#{answer}
+		where id=#{id}
+	</update>
+	<delete id="deleteQna" parameterType="int">
+		delete from qna where id=#{id}
+	</delete>
+</mapper>

@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.ssafy.happyhouse.mapper.DetailMapper">
+	<select id="SearchForDetail" resultType="HouseDealDto"
+		parameterType="int">
+		SELECT no, dong, AptName, code, dealAmount, buildYear,
+		dealYear, dealMonth, dealDay, area, floor, jibun, type
+		FROM housedeal where
+		no = #{no}
+	</select>
+</mapper>

@@ -1,0 +1,41 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.ssafy.happyhouse.mapper.MemberMapper">
+
+    <select id="findById" parameterType="String" resultType="MemberDto">
+        SELECT *
+        FROM member
+        WHERE userid = #{userid};
+    </select>
+
+    <insert id="saveMember" parameterType="MemberDto">
+        INSERT INTO member (userid, userpwd, nickname, email, sido, gugun, admin) VALUES (#{userid}, #{userpwd}, #{nickname}, #{email}, #{sido}, #{gugun}, #{admin});
+    </insert>
+
+    <update id="updateMember" parameterType="MemberDto">
+        UPDATE member
+        SET userpwd = #{userpwd},
+        email = #{email},
+        sido = #{sido},
+        gugun = #{gugun}
+        WHERE userid = #{userid};
+    </update>
+
+    <delete id="delete" parameterType="String">
+        DELETE FROM member WHERE userid = #{userid};
+    </delete>
+
+    <select id="findAll" resultType="MemberDto">
+        SELECT *
+        FROM member;
+    </select>
+	
+	<select id="getSidoName" resultType="SidoGugunCodeDto" resultMap="getSidoNameMap">
+		SELECT sido_name FROM sidocode
+		where left(sido_code,2) = #{sidoCode};
+	</select>
+	
+	<resultMap type="SidoGugunCodeDto" id="getSidoNameMap">
+		<result property="sidoName" column="sido_name"/>
+	</resultMap>
+</mapper>
